@@ -4,8 +4,12 @@ import React from "react";
 class LocationIQ extends React.Component{
   render(){
     return(
-      <h3>Location Information</h3>
-    )
+
+        div className="selectCity">
+        <p>{this.props.cityName}</p>
+        <p>{this.props.lat}</p>
+        <p>{this.props.lon}</p>
+      )
   }
 }
 

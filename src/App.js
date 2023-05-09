@@ -6,13 +6,14 @@ import { Container } from "react-bootstrap";
 
 class App extends React.Component {
   render() {
-    return (<>
-      <Container>
-        <Header />
-        <Main />
-        <Footer />
-      </Container>
-    </>)
+    return (
+      <>
+        <Container>
+          <Header />
+          <Main />
+          <Footer />
+        </Container>
+      </>)
   }
 }
 export default App;
