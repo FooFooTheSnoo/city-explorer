@@ -1,9 +1,10 @@
 import React from "react";
 import { Button, Form, ListGroup } from 'react-bootstrap';
+// import LocationIQ from "./LocationIQ";
 import axios from "axios";
 import Map from "./Map";
 import Error from "./Error";
-import LocationIQ from "./LocationIQ";
+import WeatherDay from "./WeatherDay";
 const token = process.env.REACT_APP_LOCATIONIQ;
 
 class Main extends React.Component {
@@ -15,28 +16,34 @@ class Main extends React.Component {
       cityName: '',
       lat: '',
       lon: '',
-      error: false
-
+      error: false,
+      weatherData: []
     }
   }
 
   handleInput = (e) => {
+    e.preventDefault();
     this.setState({ city: e.target.value }
-      , () => console.log(this.state.city)
-    );
+      // , () => console.log(this.state.city)
+    )
   }
 
   handleExplore = async (e) => {
     e.preventDefault();
     try {
-      let url = `https://us1.locationiq.com/v1/search?key=${token}&q=${this.state.city}&format=json`
+      let url = `http://us1.locationiq.com/v1/search?key=${token}&q=${this.state.city}&format=json`;
       const response = await axios.get(url)
-      console.log(response.data[0]);
+      console.log(response.data[0].lat);
+      let weatherUrl = `${process.env.REACT_APP_SERVER}/weather?lat=${response.data[0].lat}&lon=${response.data[0].lon}&searchQuery=${this.state.city}`
+      console.log(weatherUrl);
+      const weatherResponse = await axios.get(weatherUrl)
+      console.log(weatherResponse);
       this.setState({
         displayInfo: true,
         cityName: response.data[0].display_name,
         lat: response.data[0].lat,
-        lon: response.data[0].lon
+        lon: response.data[0].lon,
+        weatherData: weatherResponse.data
       })
     }
     catch { this.setState({ error: true }) };
@@ -53,17 +60,23 @@ class Main extends React.Component {
           <Button type="submit">Explore!</Button>
           {this.state.displayInfo &&
             <>
-              <LocationIQ />
+              {/* <LocationIQ /> */}
               <ListGroup>
                 <ListGroup.Item>{this.state.cityName}</ListGroup.Item>
                 <ListGroup.Item>Latitude: {this.state.lat}</ListGroup.Item>
                 <ListGroup.Item>Longitude: {this.state.lon}</ListGroup.Item>
               </ListGroup>
 
+              <WeatherDay
+                weatherData={this.state.weatherData}
+              />
+
               <Map
                 lat={this.state.lat}
-                lon={this.state.lon}
+                lon={this.state.lon}  
               />
+
+
             </>
 
           }
