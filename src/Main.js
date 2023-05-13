@@ -1,11 +1,13 @@
 import React from "react";
 import { Button, Form, ListGroup } from 'react-bootstrap';
-// import LocationIQ from "./LocationIQ";
+import LocationIQ from "./LocationIQ";
 import axios from "axios";
 import Map from "./Map";
 import Error from "./Error";
 import WeatherDay from "./WeatherDay";
-const token = process.env.REACT_APP_LOCATIONIQ;
+import Movie from "./Movie";
+const token = process.env.REACT_APP_LOCATIONIQ
+const localToken = process.env.REACT_APP_SERVER
 
 class Main extends React.Component {
   constructor(props) {
@@ -17,7 +19,8 @@ class Main extends React.Component {
       lat: '',
       lon: '',
       error: false,
-      weatherData: []
+      weatherData: [],
+      movieData: []
     }
   }
 
@@ -33,29 +36,32 @@ class Main extends React.Component {
     try {
       let url = `http://us1.locationiq.com/v1/search?key=${token}&q=${this.state.city}&format=json`;
       const response = await axios.get(url)
-      // console.log(response.data[0].lat);
-      let weatherUrl = `${process.env.REACT_APP_SERVER}/weather?lat=${response.data[0].lat}&lon=${response.data[0].lon}&searchQuery=${this.state.city}`
-      // console.log(weatherUrl);
+
+      const lat = response.data[0].lat;
+      const lon = response.data[0].lon;
+      let weatherUrl = `${localToken}/weather?lat=${lat}&lon=${lon}&searchQuery=${this.state.city}`
       const weatherResponse = await axios.get(weatherUrl)
-      // console.log(weatherResponse);
+      let movieUrl = `${localToken}/movie?film=${this.state.city}`
+      const movieResponse = await axios.get(movieUrl)
+
       this.setState({
         displayInfo: true,
         error: false,
         cityName: response.data[0].display_name,
         lat: response.data[0].lat,
         lon: response.data[0].lon,
-        weatherData: weatherResponse.data
-      })
+        weatherData: weatherResponse.data,
+        movieData: movieResponse.data
+      },
+        () => console.log(this.state.weatherData)
+      )
     }
-    catch(error) {
+    catch (error) {
       console.error('Does not compute. Try again')
       this.setState({
         displayInfo: false,
         error: true,
-        cityName: '',
-        lat: '',
-        lon: '',
-        weatherData: []
+
       })
     };
   }
@@ -86,6 +92,17 @@ class Main extends React.Component {
                 lat={this.state.lat}
                 lon={this.state.lon}
               />
+
+              <LocationIQ
+                cityName={this.state.cityName}
+                cityLat={this.state.cityLat}
+                cityLon={this.state.cityLon}
+              />
+
+              <Movie
+                movieData={this.state.movieData}
+              />
+
 
 
             </>
