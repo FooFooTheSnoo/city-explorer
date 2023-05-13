@@ -33,20 +33,31 @@ class Main extends React.Component {
     try {
       let url = `http://us1.locationiq.com/v1/search?key=${token}&q=${this.state.city}&format=json`;
       const response = await axios.get(url)
-      console.log(response.data[0].lat);
+      // console.log(response.data[0].lat);
       let weatherUrl = `${process.env.REACT_APP_SERVER}/weather?lat=${response.data[0].lat}&lon=${response.data[0].lon}&searchQuery=${this.state.city}`
-      console.log(weatherUrl);
+      // console.log(weatherUrl);
       const weatherResponse = await axios.get(weatherUrl)
-      console.log(weatherResponse);
+      // console.log(weatherResponse);
       this.setState({
         displayInfo: true,
+        error: false,
         cityName: response.data[0].display_name,
         lat: response.data[0].lat,
         lon: response.data[0].lon,
         weatherData: weatherResponse.data
       })
     }
-    catch { this.setState({ error: true }) };
+    catch(error) {
+      console.error('Does not compute. Try again')
+      this.setState({
+        displayInfo: false,
+        error: true,
+        cityName: '',
+        lat: '',
+        lon: '',
+        weatherData: []
+      })
+    };
   }
 
   render() {
@@ -73,7 +84,7 @@ class Main extends React.Component {
 
               <Map
                 lat={this.state.lat}
-                lon={this.state.lon}  
+                lon={this.state.lon}
               />
 
 
