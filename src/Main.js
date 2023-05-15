@@ -41,7 +41,7 @@ class Main extends React.Component {
       const lon = response.data[0].lon;
       let weatherUrl = `${localToken}weather?lat=${lat}&lon=${lon}&searchQuery=${this.state.city}`
       const weatherResponse = await axios.get(weatherUrl)
-      let movieUrl = `${localToken}/movie?film=${this.state.city}`
+      let movieUrl = `${localToken}movie?film=${this.state.city}`
       const movieResponse = await axios.get(movieUrl)
 
       this.setState({
