@@ -34,7 +34,7 @@ class Main extends React.Component {
   handleExplore = async (e) => {
     e.preventDefault();
     try {
-      let url = `http://us1.locationiq.com/v1/search?key=${token}&q=${this.state.city}&format=json`;
+      let url = `https://us1.locationiq.com/v1/search?key=${token}&q=${this.state.city}&format=json`;
       const response = await axios.get(url)
 
       const lat = response.data[0].lat;
